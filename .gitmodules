@@ -1,0 +1,6 @@
+[submodule "web-deploy-env"]
+	path = web-deploy-env
+	url = git@github.com:rwgriffithv/web-deploy-env.git
+[submodule "agent-dev-env"]
+	path = agent-dev-env
+	url = git@github.com:rwgriffithv/agent-dev-env.git
