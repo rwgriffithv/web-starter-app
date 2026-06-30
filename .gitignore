@@ -12,16 +12,13 @@ Thumbs.db
 # =========================
 # Editor & IDE Files
 # =========================
-# Ignore personal VS Code settings (but keep .vscode/extensions.json if you add one)
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
 
-# IntelliJ / JetBrains
 .idea/
 *.iml
 
-# Vim/Emacs
 *.swp
 *.swo
 *~
@@ -29,7 +26,6 @@ Thumbs.db
 # =========================
 # Environment Variables
 # =========================
-# Protects API keys if you ever use Claude/OpenAI alongside Ollama
 .env
 .env.local
 .env.development.local
@@ -46,16 +42,50 @@ yarn-debug.log*
 yarn-error.log*
 
 # =========================
+# Dependencies & Build
+# =========================
+node_modules/
+.next/
+
+# =========================
+# Database & Data
+# =========================
+data/*.db
+data/**/*.db
+data/*.db-wal
+data/**/*.db-wal
+data/*.db-shm
+data/**/*.db-shm
+data/backups/
+data/sqlite/
+
+# =========================
+# Build Artifacts
+# =========================
+tsconfig.tsbuildinfo
+
+# =========================
 # Scripting / Local Testing
 # =========================
-# In case you write Python or Node helper scripts in the future
-node_modules/
 __pycache__/
 *.py[cod]
 *$py.class
 venv/
 .venv/
 env/
-.devcontainer
-.opencode/skills
+
+# =========================
+# Playwright
+# =========================
+test-results/
+
+# =========================
+# Documentation
+# =========================
+docs/tmp/
+
+# =========================
+# Devcontainer / OpenCode
+# =========================
 .devcontainer/base
+.opencode/skills

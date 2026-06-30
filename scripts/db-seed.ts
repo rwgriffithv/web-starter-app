@@ -1,0 +1,31 @@
+import Database from "better-sqlite3";
+import path from "path";
+
+const dbPath = process.env.DATABASE_URL?.replace(/^file:/, "") || path.join(process.cwd(), "data", "dev.db");
+
+const db = new Database(dbPath);
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
+
+const existing = db.prepare("SELECT COUNT(*) as count FROM users").get() as { count: number };
+
+if (existing.count === 0) {
+  const insertUser = db.prepare("INSERT INTO users (email, name, role) VALUES (?, ?, ?)");
+
+  insertUser.run("admin@example.com", "Admin User", "admin");
+  insertUser.run("alice@example.com", "Alice Johnson", "user");
+  insertUser.run("bob@example.com", "Bob Smith", "user");
+  insertUser.run("charlie@example.com", "Charlie Brown", "user");
+
+  const insertView = db.prepare("INSERT INTO page_views (path) VALUES (?)");
+  insertView.run("/");
+  insertView.run("/features");
+  insertView.run("/about");
+  insertView.run("/admin");
+
+  console.log("Database seeded with demo data.");
+} else {
+  console.log("Database already has data. Skipping seed.");
+}
+
+db.close();
