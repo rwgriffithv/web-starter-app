@@ -84,8 +84,8 @@ The `tunnel` service has no access to `backend`, ensuring the database is never 
 | Language | TypeScript 5.4 (strict) | Type safety with no `any` |
 | Database | better-sqlite3 (WAL mode) | Synchronous SQLite with concurrent read performance |
 | Styling | Plain CSS (custom properties) | Zero-dependency, themeable via `:root` variables |
-| Proxy | Caddy 2.8 | TLS, rate limiting, security headers |
-| Tunnel | cloudflared 2024.6.1 | Outbound-only Cloudflare Tunnel |
+| Proxy | Caddy 2.11 (alpine) | TLS, rate limiting, security headers |
+| Tunnel | cloudflared 2026.6.1 | Outbound-only Cloudflare Tunnel |
 | Development | OpenCode + Ollama | AI-assisted coding with reusable skills |
 
 ## Development Workflow

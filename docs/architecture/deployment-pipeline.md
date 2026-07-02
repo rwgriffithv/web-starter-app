@@ -27,8 +27,8 @@ Idempotent host configuration. Must run on the host (not inside the devcontainer
 |---|---|---|
 | OS check | Debian/Ubuntu only |
 | Verify Docker | Required for image builds and container orchestration |
-| Pull `caddy:2.8-alpine` | Pre-caches the reverse proxy image |
-| Pull `cloudflare/cloudflared:2024.6.1` | Pre-caches the tunnel image |
+| Pull `caddy:2.11.4-alpine` | Pre-caches the reverse proxy image |
+| Pull `cloudflare/cloudflared:2026.6.1` | Pre-caches the tunnel image |
 
 ### `scripts/bootstrap.sh`
 
@@ -256,8 +256,8 @@ docker compose build --build-arg IMAGE_REGISTRY=ghcr.io/myorg
 | Service | Image | Role | Networks |
 |---|---|---|---|
 | `webapp` | Custom build | Next.js application server (port 3000) | backend |
-| `caddy` | `caddy:2.8-alpine` | Reverse proxy, TLS termination, security headers, rate limiting | frontend, backend |
-| `tunnel` | `cloudflare/cloudflared:2024.6.1` | Outbound Cloudflare Tunnel | frontend |
+| `caddy` | `caddy:2.11.4-alpine` | Reverse proxy, TLS termination, security headers, rate limiting | frontend, backend |
+| `tunnel` | `cloudflare/cloudflared:2026.6.1` | Outbound Cloudflare Tunnel | frontend |
 
 ### Network Isolation
 
