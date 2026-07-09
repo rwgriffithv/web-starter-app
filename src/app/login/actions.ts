@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getDb, type User } from "@/lib/db";
-import { createSession, verifyPassword } from "@/lib/auth";
+import { createSession, verifyPassword, destroySession } from "@/lib/auth";
 
 interface LoginState { error?: string }
 
@@ -22,4 +22,9 @@ export async function login(prevState: LoginState | null, formData: FormData): P
   store.set("session", createSession(user), { httpOnly: true, secure: true, sameSite: "lax", path: "/", maxAge: 60 * 60 * 24 });
 
   redirect("/admin");
+}
+
+export async function logout() {
+  await destroySession();
+  redirect("/login");
 }

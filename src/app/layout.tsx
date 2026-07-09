@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getDb } from "@/lib/db";
 import "./globals.css";
 
-const siteName = process.env.APP_NAME || "WebStarter";
+const defaultSiteName = process.env.APP_NAME || "WebStarter";
 const siteDescription = "A production-ready Next.js starter with dashboard";
 
 export const metadata: Metadata = {
-  title: siteName,
+  title: defaultSiteName,
   description: siteDescription,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const db = getDb();
+  const row = db.prepare("SELECT value FROM site_config WHERE key = 'site_name'").get() as { value: string } | undefined;
+  const siteName = row?.value || defaultSiteName;
+
   return (
     <html lang="en">
       <body>

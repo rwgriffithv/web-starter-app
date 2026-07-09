@@ -29,6 +29,9 @@ function seedDefaults(database: Database.Database): void {
   const existingAdmin = database.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'admin'").get() as { count: number };
 
   if (existingAdmin.count === 0) {
+    if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD || !process.env.SESSION_SECRET) {
+      return;
+    }
     const cfg = getConfig();
     database.prepare(
       "INSERT INTO users (username, name, role, password) VALUES (?, ?, ?, ?)"
