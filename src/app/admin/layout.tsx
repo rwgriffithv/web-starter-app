@@ -6,8 +6,8 @@ interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
-  if (!isAdmin()) redirect("/login");
+export default async function AdminLayout({ children }: AdminLayoutProps) {
+  if (!(await isAdmin())) redirect("/login");
 
   return (
     <div className="admin-layout">

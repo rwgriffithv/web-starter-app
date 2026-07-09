@@ -29,8 +29,8 @@ export default function AdminDashboardPage() {
       <table>
         <thead>
           <tr>
+            <th>Username</th>
             <th>Name</th>
-            <th>Email</th>
             <th>Role</th>
             <th>Joined</th>
           </tr>
@@ -38,8 +38,8 @@ export default function AdminDashboardPage() {
         <tbody>
           {recentUsers.map((u) => (
             <tr key={u.id}>
+              <td>{u.username}</td>
               <td>{u.name}</td>
-              <td>{u.email}</td>
               <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
               <td>{new Date(u.created_at).toLocaleDateString()}</td>
             </tr>

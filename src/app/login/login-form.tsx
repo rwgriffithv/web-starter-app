@@ -11,15 +11,15 @@ export function LoginForm() {
   return (
     <form action={dispatch}>
       <div className="form-group">
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" required placeholder="email@example.com" />
+        <label htmlFor="username">Username</label>
+        <input id="username" name="username" type="text" required placeholder="Enter username" />
       </div>
       <div className="form-group">
         <label htmlFor="password">Password</label>
         <input id="password" name="password" type="password" required placeholder="Enter password" />
       </div>
       {state?.error && (
-        <p style={{ color: "#dc2626", fontSize: "0.8rem", marginBottom: "0.75rem" }}>{state.error}</p>
+        <p style={{ color: "var(--color-error)", fontSize: "0.8rem", marginBottom: "0.75rem" }}>{state.error}</p>
       )}
       <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>
         Sign In

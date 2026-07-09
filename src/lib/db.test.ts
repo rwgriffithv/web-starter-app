@@ -2,6 +2,8 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
+import { DDL } from "./schema";
+import { runMigrations } from "./migrations";
 
 const TEST_DB_PATH = path.join(process.cwd(), "data", "test.db");
 
@@ -13,45 +15,33 @@ describe("db", () => {
     db = new Database(TEST_DB_PATH);
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('admin', 'user')),
-        created_at TEXT NOT NULL DEFAULT (datetime('now'))
-      );
-      CREATE TABLE IF NOT EXISTS page_views (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        path TEXT NOT NULL,
-        viewed_at TEXT NOT NULL DEFAULT (datetime('now'))
-      );
-    `);
+    db.exec(DDL);
+    runMigrations(db);
   });
 
   it("creates users table and inserts a row", () => {
-    db.prepare("INSERT INTO users (email, name, role) VALUES (?, ?, ?)").run(
-      "test@example.com", "Test User", "user"
+    db.prepare("INSERT INTO users (username, name, role, password) VALUES (?, ?, ?, ?)").run(
+      "testuser", "Test User", "user", ""
     );
-    const user = db.prepare("SELECT * FROM users WHERE email = ?").get("test@example.com") as Record<string, unknown>;
+    const user = db.prepare("SELECT * FROM users WHERE username = ?").get("testuser") as Record<string, unknown>;
     expect(user).toBeTruthy();
-    expect(user.email).toBe("test@example.com");
+    expect(user.username).toBe("testuser");
     expect(user.name).toBe("Test User");
     expect(user.role).toBe("user");
   });
 
-  it("enforces unique email constraint", () => {
+  it("enforces unique username constraint", () => {
     expect(() => {
-      db.prepare("INSERT INTO users (email, name, role) VALUES (?, ?, ?)").run(
-        "test@example.com", "Duplicate", "user"
+      db.prepare("INSERT INTO users (username, name, role, password) VALUES (?, ?, ?, ?)").run(
+        "testuser", "Duplicate", "user", ""
       );
     }).toThrow();
   });
 
   it("enforces role check constraint", () => {
     expect(() => {
-      db.prepare("INSERT INTO users (email, name, role) VALUES (?, ?, ?)").run(
-        "bad@example.com", "Bad Role", "superadmin"
+      db.prepare("INSERT INTO users (username, name, role, password) VALUES (?, ?, ?, ?)").run(
+        "baduser", "Bad Role", "superadmin", ""
       );
     }).toThrow();
   });
@@ -61,6 +51,12 @@ describe("db", () => {
     const view = db.prepare("SELECT * FROM page_views LIMIT 1").get() as Record<string, unknown>;
     expect(view).toBeTruthy();
     expect(view.path).toBe("/");
+  });
+
+  it("migration adds password column if missing", () => {
+    const columns = db.prepare("PRAGMA table_info(users)").all() as { name: string }[];
+    const colNames = columns.map(c => c.name);
+    expect(colNames).toContain("password");
   });
 
   afterAll(() => {

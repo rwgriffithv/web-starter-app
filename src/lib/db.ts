@@ -1,6 +1,10 @@
 import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
+import { getConfig } from "./config";
+import { hashPassword } from "./auth";
+import { DDL } from "./schema";
+import { runMigrations } from "./migrations";
 
 const DB_PATH = process.env.DATABASE_URL?.replace(/^file:/, "") || path.join(process.cwd(), "data", "dev.db");
 
@@ -13,30 +17,31 @@ export function getDb(): Database.Database {
     db.pragma("journal_mode = WAL");
     db.pragma("foreign_keys = ON");
 
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT NOT NULL UNIQUE,
-        name TEXT NOT NULL,
-        role TEXT NOT NULL DEFAULT 'user' CHECK(role IN ('admin', 'user')),
-        created_at TEXT NOT NULL DEFAULT (datetime('now'))
-      );
+    db.exec(DDL);
+    runMigrations(db);
 
-      CREATE TABLE IF NOT EXISTS page_views (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        path TEXT NOT NULL,
-        viewed_at TEXT NOT NULL DEFAULT (datetime('now'))
-      );
-    `);
+    seedDefaults(db);
   }
   return db;
 }
 
+function seedDefaults(database: Database.Database): void {
+  const existingAdmin = database.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'admin'").get() as { count: number };
+
+  if (existingAdmin.count === 0) {
+    const cfg = getConfig();
+    database.prepare(
+      "INSERT INTO users (username, name, role, password) VALUES (?, ?, ?, ?)"
+    ).run(cfg.adminUsername, "Admin", "admin", hashPassword(cfg.adminPassword));
+  }
+}
+
 export interface User {
   id: number;
-  email: string;
+  username: string;
   name: string;
   role: "admin" | "user";
+  password: string;
   created_at: string;
 }
 

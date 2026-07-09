@@ -12,8 +12,8 @@ export default function AdminUsersPage() {
         <thead>
           <tr>
             <th>ID</th>
+            <th>Username</th>
             <th>Name</th>
-            <th>Email</th>
             <th>Role</th>
             <th>Joined</th>
           </tr>
@@ -22,8 +22,8 @@ export default function AdminUsersPage() {
           {users.map((u) => (
             <tr key={u.id}>
               <td style={{ fontFamily: "monospace", fontSize: "0.8rem" }}>{u.id}</td>
+              <td>{u.username}</td>
               <td>{u.name}</td>
-              <td>{u.email}</td>
               <td><span className={`badge badge-${u.role}`}>{u.role}</span></td>
               <td>{new Date(u.created_at).toLocaleDateString()}</td>
             </tr>

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { config } from "@/lib/config";
 import "./globals.css";
 
+const siteName = process.env.APP_NAME || "WebStarter";
+const siteDescription = "A production-ready Next.js starter with dashboard";
+
 export const metadata: Metadata = {
-  title: config.siteName,
-  description: config.siteDescription,
+  title: siteName,
+  description: siteDescription,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="site-header">
           <div className="container">
             <Link href="/" style={{ fontWeight: 700, fontSize: "1.125rem", color: "var(--color-text)" }}>
-              {config.siteName}
+              {siteName}
             </Link>
             <nav>
               <Link href="/">Home</Link>
@@ -30,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <footer>
           <div className="container">
-            &copy; {new Date().getFullYear()} {config.siteName}. All rights reserved.
+            &copy; {new Date().getFullYear()} {siteName}. All rights reserved.
           </div>
         </footer>
       </body>
